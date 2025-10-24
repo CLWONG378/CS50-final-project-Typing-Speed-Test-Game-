@@ -22,16 +22,16 @@ def test_calculate_accuracy_partial():
 
 def test_select_sentence_in_list():
     sentences_list = [
-        "The quick brown fox jumps over the lazy dog.",
-        "Python programming is fun and educational.",
-        "CS50P final project is exciting!",
-        "Always write clean and readable code.",
-        "Practice makes perfect in coding and typing.",
-        "Learning Python opens many doors in technology.",
-        "Consistency is key to improving your skills.",
-        "Debugging code teaches patience and resilience.",
-        "Writing tests makes programs more reliable.",
-        "Time management is essential for successful projects."
+                "Hello world",
+        "Python is fun",
+        "CS50P rocks",
+        "Typing test game",
+        "Code and test",
+        "Fast and accurate",
+        "Keep learning",
+        "Test your skills",
+        "Try again",
+        "Win the game"
     ]
     sentence = select_sentence()
     assert sentence in sentences_list
