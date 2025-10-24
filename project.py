@@ -1,15 +1,11 @@
 #!/usr/bin/env python3
 """
-Typing Speed Test with 5 Unique Rounds, Player Name, Highlighted Scoreboard,
-Friendly Exit Message, and Manual Exit
+Typing Speed Test - Keep session records, Play Again, Top 3 Highlighted
 """
 
 import random
 import time
-import json
-import os
 
-SCORES_FILE = "scores.json"
 NUM_ROUNDS = 5  # 5 rounds per session
 
 # ---------------- Functions ----------------
@@ -22,7 +18,7 @@ def get_player_name():
     return name
 
 def select_sentences_for_session():
-    """Return a list of NUM_ROUNDS unique short sentences for the session."""
+    """Return a list of NUM_ROUNDS unique short sentences."""
     sentences = [
         "Hello world",
         "Python is fun",
@@ -39,7 +35,6 @@ def select_sentences_for_session():
     return sentences[:NUM_ROUNDS]
 
 def calculate_wpm(elapsed_time, typed_text):
-    """Calculate words per minute."""
     words = len(typed_text.split())
     minutes = elapsed_time / 60
     if minutes == 0:
@@ -47,58 +42,14 @@ def calculate_wpm(elapsed_time, typed_text):
     return words / minutes
 
 def calculate_accuracy(original, typed):
-    """Calculate accuracy percentage of typed text."""
     if not original:
         return 0
     correct_chars = sum(1 for o, t in zip(original, typed) if o == t)
     return (correct_chars / len(original)) * 100
 
-def load_scores():
-    """Load scores from file, return as list."""
-    if not os.path.exists(SCORES_FILE):
-        return []
-    with open(SCORES_FILE, "r") as f:
-        try:
-            return json.load(f)
-        except json.JSONDecodeError:
-            return []
-
-def save_scores(scores):
-    """Save scores list to file."""
-    with open(SCORES_FILE, "w") as f:
-        json.dump(scores, f, indent=2)
-
-def update_scores(player_name, avg_wpm, avg_accuracy):
-    """Add current player score to scoreboard."""
-    scores = load_scores()
-    scores.append({"name": player_name, "wpm": avg_wpm, "accuracy": avg_accuracy})
-    scores.sort(key=lambda x: x["wpm"], reverse=True)
-    save_scores(scores)
-    return scores
-
-def display_scoreboard(current_player=None):
-    """Display top 5 scores in a neat table, highlighting current player."""
-    scores = load_scores()
-    if not scores:
-        print("\nNo scores yet.")
-        return
-
-    print("\nHigh Scores:")
-    print(f"{'Rank':<5} {'Player':<15} {'WPM':>8} {'Accuracy (%)':>15}")
-    print("-" * 45)
-
-    for i, entry in enumerate(scores[:5], start=1):
-        name_display = entry['name']
-        if current_player and entry['name'] == current_player:
-            name_display = f"*{name_display}*"  # highlight current player
-        print(f"{i:<5} {name_display:<15} {entry['wpm']:>8.2f} {entry['accuracy']:>15.2f}")
-
-# ---------------- Main ----------------
-
-def main():
-    print("Welcome to the Typing Speed Test!")
+def play_game():
+    """Run a single session of the typing game and return session scores."""
     player_name = get_player_name()
-
     total_wpm = 0
     total_accuracy = 0
 
@@ -120,21 +71,58 @@ def main():
     avg_wpm = total_wpm / NUM_ROUNDS
     avg_accuracy = total_accuracy / NUM_ROUNDS
 
-    print(f"\nSession Summary for {player_name}:")
+    # Display thanks page and session results
+    print("\n" + "="*40)
+    print(f"Thank you for playing, {player_name}!")
+    print("Session Results:")
     print(f"Average WPM: {avg_wpm:.2f}")
     print(f"Average Accuracy: {avg_accuracy:.2f}%")
+    print("="*40 + "\n")
 
-    # Update scores and save them
-    update_scores(player_name, avg_wpm, avg_accuracy)
+    return {"name": player_name, "wpm": avg_wpm, "accuracy": avg_accuracy}
 
-    # Display scoreboard
-    display_scoreboard(current_player=player_name)
+def display_session_scoreboard(session_scores):
+    """Display scoreboard for current session with top 3 highlighted."""
+    if not session_scores:
+        print("No scores yet in this session.")
+        return
 
-    # Friendly message
-    print(f"\nThank you for playing, {player_name}! Your session results are above.")
+    print("\nSession Scoreboard (Top Players this session):")
+    print(f"{'Rank':<5} {'Player':<15} {'WPM':>8} {'Accuracy (%)':>15}")
+    print("-"*45)
 
-    # Wait for user to press Enter to exit (prevents auto shutdown)
-    input("\nPress Enter to exit the program...")
+    # Sort scores descending by WPM
+    sorted_scores = sorted(session_scores, key=lambda x: x["wpm"], reverse=True)
+
+    for i, entry in enumerate(sorted_scores, start=1):
+        name_display = entry["name"]
+        # Highlight top 3
+        if i == 1:
+            name_display = f"🥇 {name_display}"
+        elif i == 2:
+            name_display = f"🥈 {name_display}"
+        elif i == 3:
+            name_display = f"🥉 {name_display}"
+        print(f"{i:<5} {name_display:<15} {entry['wpm']:>8.2f} {entry['accuracy']:>15.2f}")
+
+# ---------------- Main Loop ----------------
+
+def main():
+    session_scores = []  # Keep all records for current runtime
+    while True:
+        player_score = play_game()
+        session_scores.append(player_score)
+
+        display_session_scoreboard(session_scores)
+
+        # Play again option
+        print("\nOptions:")
+        print("1. Play Again")
+        print("2. Exit")
+        choice = input("Enter choice: ").strip()
+        if choice != "1":
+            print("\nExiting the game. Goodbye!")
+            break
 
 if __name__ == "__main__":
     main()
