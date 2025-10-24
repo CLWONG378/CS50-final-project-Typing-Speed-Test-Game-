@@ -1,9 +1,15 @@
+#!/usr/bin/env python3
+"""
+Typing Speed Test with 5 Unique Rounds, Player Name, and Highlighted Scoreboard
+"""
+
 import random
 import time
 import json
 import os
 
 SCORES_FILE = "scores.json"
+NUM_ROUNDS = 5  # change from 10 to 5
 
 # ---------------- Functions ----------------
 
@@ -15,7 +21,7 @@ def get_player_name():
     return name
 
 def select_sentences_for_session():
-    """Return a list of 10 unique short sentences for the session."""
+    """Return a list of NUM_ROUNDS unique short sentences for the session."""
     sentences = [
         "Hello world",
         "Python is fun",
@@ -28,8 +34,8 @@ def select_sentences_for_session():
         "Try again",
         "Win the game"
     ]
-    random.shuffle(sentences)  # shuffle for random order
-    return sentences[:10]      # return 10 unique sentences
+    random.shuffle(sentences)
+    return sentences[:NUM_ROUNDS]
 
 def calculate_wpm(elapsed_time, typed_text):
     """Calculate words per minute."""
@@ -67,7 +73,7 @@ def update_scores(player_name, avg_wpm, avg_accuracy):
     scores.append({"name": player_name, "wpm": avg_wpm, "accuracy": avg_accuracy})
     scores.sort(key=lambda x: x["wpm"], reverse=True)
     save_scores(scores)
-    return scores  # Return updated scores for display
+    return scores
 
 def display_scoreboard(current_player=None):
     """Display top 5 scores in a neat table, highlighting current player."""
@@ -98,7 +104,7 @@ def main():
     session_sentences = select_sentences_for_session()
 
     for round_num, sentence in enumerate(session_sentences, start=1):
-        print(f"\nRound {round_num}/10:")
+        print(f"\nRound {round_num}/{NUM_ROUNDS}:")
         print(sentence)
         start = time.time()
         typed = input("> ")
@@ -110,8 +116,8 @@ def main():
         total_wpm += wpm
         total_accuracy += accuracy
 
-    avg_wpm = total_wpm / 10
-    avg_accuracy = total_accuracy / 10
+    avg_wpm = total_wpm / NUM_ROUNDS
+    avg_accuracy = total_accuracy / NUM_ROUNDS
 
     print(f"\nSession Summary for {player_name}:")
     print(f"Average WPM: {avg_wpm:.2f}")
