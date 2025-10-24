@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Typing Speed Test with 5 Unique Rounds, Player Name, and Highlighted Scoreboard
+Typing Speed Test with 5 Unique Rounds, Player Name, Highlighted Scoreboard, and Friendly Exit Message
 """
 
 import random
@@ -9,7 +9,7 @@ import json
 import os
 
 SCORES_FILE = "scores.json"
-NUM_ROUNDS = 5  # change from 10 to 5
+NUM_ROUNDS = 5  # 5 rounds per session
 
 # ---------------- Functions ----------------
 
@@ -125,6 +125,9 @@ def main():
 
     update_scores(player_name, avg_wpm, avg_accuracy)
     display_scoreboard(current_player=player_name)
+
+    # Friendly thank you message
+    print(f"\nThank you for playing, {player_name}! Your session results are above.")
 
 if __name__ == "__main__":
     main()
