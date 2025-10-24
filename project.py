@@ -14,8 +14,8 @@ def get_player_name():
         name = "Player"
     return name
 
-def select_sentence():
-    """Return a random sentence for typing."""
+def select_sentences_for_session():
+    """Return a list of 10 unique short sentences for the session."""
     sentences = [
         "Hello world",
         "Python is fun",
@@ -28,7 +28,8 @@ def select_sentence():
         "Try again",
         "Win the game"
     ]
-    return random.choice(sentences)
+    random.shuffle(sentences)  # shuffle for random order
+    return sentences[:10]      # return 10 unique sentences
 
 def calculate_wpm(elapsed_time, typed_text):
     """Calculate words per minute."""
@@ -44,20 +45,6 @@ def calculate_accuracy(original, typed):
         return 0
     correct_chars = sum(1 for o, t in zip(original, typed) if o == t)
     return (correct_chars / len(original)) * 100
-
-def play_round(round_num):
-    """Play a single typing round and return WPM and accuracy."""
-    print(f"\nRound {round_num}/10:")
-    sentence = select_sentence()
-    print(sentence)
-    start = time.time()
-    typed = input("> ")
-    end = time.time()
-    elapsed = end - start
-    wpm = calculate_wpm(elapsed, typed)
-    accuracy = calculate_accuracy(sentence, typed)
-    print(f"Time: {elapsed:.2f}s, WPM: {wpm:.2f}, Accuracy: {accuracy:.2f}%")
-    return wpm, accuracy
 
 def load_scores():
     """Load scores from file, return as list."""
@@ -83,7 +70,7 @@ def update_scores(player_name, avg_wpm, avg_accuracy):
     return scores  # Return updated scores for display
 
 def display_scoreboard(current_player=None):
-    """Display top 5 scores with current player highlighted."""
+    """Display top 5 scores in a neat table, highlighting current player."""
     scores = load_scores()
     if not scores:
         print("\nNo scores yet.")
@@ -108,8 +95,18 @@ def main():
     total_wpm = 0
     total_accuracy = 0
 
-    for round_num in range(1, 11):
-        wpm, accuracy = play_round(round_num)
+    session_sentences = select_sentences_for_session()
+
+    for round_num, sentence in enumerate(session_sentences, start=1):
+        print(f"\nRound {round_num}/10:")
+        print(sentence)
+        start = time.time()
+        typed = input("> ")
+        end = time.time()
+        elapsed = end - start
+        wpm = calculate_wpm(elapsed, typed)
+        accuracy = calculate_accuracy(sentence, typed)
+        print(f"Time: {elapsed:.2f}s, WPM: {wpm:.2f}, Accuracy: {accuracy:.2f}%")
         total_wpm += wpm
         total_accuracy += accuracy
 
