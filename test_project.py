@@ -3,7 +3,7 @@ from project import calculate_wpm, calculate_accuracy, select_sentences_for_sess
 
 def test_calculate_wpm():
     typed = "This is a test"
-    elapsed = 30  # 30 seconds
+    elapsed = 30  # seconds
     wpm = calculate_wpm(elapsed, typed)
     expected = len(typed.split()) / (elapsed / 60)
     assert abs(wpm - expected) < 1e-6
