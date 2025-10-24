@@ -13,7 +13,7 @@ A Typing Speed Test game.
 
 The player will enter their name. 
 
-For each of the 10 sentences typed the program computes the words typed per minute along with the scores per session in accuracy. 
+For each of the 5 sentences typed the program computes the words typed per minute along with the scores per session in accuracy. 
 
 The overall scores will also be saved in a JSON file and displayed in a high score table. The player taking the test will be highlighted. 
 
