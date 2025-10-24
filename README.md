@@ -9,7 +9,7 @@ Made by WONG Chun Lung, Juno
 
 A Typing Speed Test game.  
 
-10 random sentences will be given. 
+5 random sentences will be given. 
 
 The player will enter their name. 
 
