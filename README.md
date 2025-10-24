@@ -2,36 +2,39 @@ CS50-final-project-Typing-Speed-Test-Game
 
 Made by WONG Chun Lung, Juno
 
-Video Demo:
 
-Description:
+#### Video Demo: <URL HERE>
 
-This project is a command-line Typing Speed Test game implemented in Python.
+#### Description:
 
+A Typing Speed Test game.  
 
-Users type randomly selected sentences as fast and accurately as they can.
+10 random sentences will be given. 
 
+The player will enter their name. 
 
-It calculates WPM and typing accuracy in every round.
+For each of the 10 sentences typed the program computes the words typed per minute along with the scores per session in accuracy. 
 
+The overall scores will also be saved in a JSON file and displayed in a high score table. The player taking the test will be highlighted. 
 
-This showcases the utilization of Python functions, command-line, time measurement, and pytest for testing.
+## Files
 
+`project.py` – main program
 
-Files:
+`test_project.py` – pytest tests
 
-project.py – the main file that has all functions and the program.
+`scores.json` – stores player scores
 
+`requirements.txt` – dependencies
 
+`README.md` – project description
 
-test_project.py – includes pytest tests for core functions.
+## How to Run
 
+```bash
 
-requirements.txt – dependencies file (pytest).
-
-
-
-README.md – file that describes the project.
-
-How to Run:
 python project.py
+```
+
+
+
