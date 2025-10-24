@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """
-Typing Speed Test with 5 Unique Rounds, Player Name, Highlighted Scoreboard, and Friendly Exit Message
+Typing Speed Test with 5 Unique Rounds, Player Name, Highlighted Scoreboard,
+Friendly Exit Message, and Manual Exit
 """
 
 import random
@@ -123,11 +124,17 @@ def main():
     print(f"Average WPM: {avg_wpm:.2f}")
     print(f"Average Accuracy: {avg_accuracy:.2f}%")
 
+    # Update scores and save them
     update_scores(player_name, avg_wpm, avg_accuracy)
+
+    # Display scoreboard
     display_scoreboard(current_player=player_name)
 
-    # Friendly thank you message
+    # Friendly message
     print(f"\nThank you for playing, {player_name}! Your session results are above.")
+
+    # Wait for user to press Enter to exit (prevents auto shutdown)
+    input("\nPress Enter to exit the program...")
 
 if __name__ == "__main__":
     main()
