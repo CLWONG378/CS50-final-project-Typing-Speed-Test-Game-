@@ -23,8 +23,6 @@ The overall scores will also be saved in a JSON file and displayed in a high sco
 
 `test_project.py` – pytest tests
 
-`scores.json` – stores player scores
-
 `requirements.txt` – dependencies
 
 `README.md` – project description
