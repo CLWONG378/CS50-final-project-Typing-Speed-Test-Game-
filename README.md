@@ -1,4 +1,4 @@
-CS50-final-project-Typing-Speed-Test-Game
+#CS50-final-project-Typing-Speed-Test-Game
 
 Made by WONG Chun Lung, Juno
 
