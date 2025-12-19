@@ -11,16 +11,21 @@ Features:
 - Persistent scoreboard (JSON)
 - Top 3 highlighted
 - Play Again option
+- Prevents auto-close even on double-click
 """
 
 import random
 import time
 import json
+import os
 from colorama import init, Fore, Style
 
-init(autoreset=True)  # initialize colorama
+init(autoreset=True)
 
 NUM_ROUNDS = 5
+
+# File path for scores.json in the same folder as this script
+SCORES_FILE = os.path.join(os.path.dirname(__file__), "scores.json")
 
 # Sample sentences categorized by difficulty
 SENTENCES = {
@@ -109,7 +114,7 @@ def countdown():
 
 # ---------------- JSON Score Functions ----------------
 
-def save_score(score, filename="scores.json"):
+def save_score(score, filename=SCORES_FILE):
     """Save a player's score to a JSON file."""
     scores = []
     try:
@@ -123,7 +128,7 @@ def save_score(score, filename="scores.json"):
     with open(filename, "w") as f:
         json.dump(scores, f, indent=4)
 
-def load_scores(filename="scores.json"):
+def load_scores(filename=SCORES_FILE):
     """Load all saved scores from JSON file."""
     try:
         with open(filename, "r") as f:
@@ -145,7 +150,7 @@ def play_game():
 
     for i, sentence in enumerate(session_sentences, start=1):
         print(f"\nRound {i}/{NUM_ROUNDS}:")
-        print(Fore.LIGHTWHITE_EX + sentence + Style.RESET_ALL)  # White for black background
+        print(Fore.LIGHTWHITE_EX + sentence + Style.RESET_ALL)
         countdown()
         start_time = time.time()
         typed = input("> ")
@@ -211,29 +216,24 @@ def main():
     print(Fore.LIGHTWHITE_EX + "Welcome to the Typing Speed Test Game!" + Style.RESET_ALL)
     
     while True:
-        # Play a game session
         score = play_game()
-        
-        # Save score to JSON
         save_score(score)
-        
-        # Load all-time scores and display
         all_scores = load_scores()
         display_session_scoreboard(all_scores)
         
-        # Replay or exit
         while True:
             print("\nOptions:")
             print("1. Play Again")
             print("2. Exit")
             choice = input("Enter choice: ").strip()
             if choice == "1":
-                break  # Restart main loop to play again
+                break
             elif choice == "2":
                 print("\nExiting the game. Goodbye!")
-                return  # Exit program gracefully
+                return
             else:
                 print(Fore.RED + "Invalid input. Please enter 1 or 2." + Style.RESET_ALL)
 
 if __name__ == "__main__":
     main()
+    input("\nPress Enter to exit...")  # Keeps window open even if double-clicked
