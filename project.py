@@ -8,12 +8,14 @@ Features:
 - Session stats
 - Colored output
 - Achievements
-- Session scoreboard with top 3
+- Persistent scoreboard (JSON)
+- Top 3 highlighted
 - Play Again option
 """
 
 import random
 import time
+import json
 from colorama import init, Fore, Style
 
 init(autoreset=True)  # initialize colorama
@@ -58,9 +60,7 @@ SENTENCES = {
 
 def get_player_name():
     name = input("Enter your name: ").strip()
-    if not name:
-        name = "Player"
-    return name
+    return name if name else "Player"
 
 def choose_difficulty():
     print("\nSelect Difficulty Level:")
@@ -94,15 +94,11 @@ def show_mistakes(original, typed):
     mistakes = []
     for i, o in enumerate(original):
         if i < len(typed):
-            if typed[i] != o:
-                mistakes.append(Fore.RED + typed[i] + Style.RESET_ALL)
-            else:
-                mistakes.append(Fore.GREEN + typed[i] + Style.RESET_ALL)
+            mistakes.append(Fore.GREEN + typed[i] + Style.RESET_ALL if typed[i] == o else Fore.RED + typed[i] + Style.RESET_ALL)
         else:
             mistakes.append(Fore.RED + "_" + Style.RESET_ALL)
     if len(typed) > len(original):
-        extra = typed[len(original):]
-        mistakes += [Fore.RED + c + Style.RESET_ALL for c in extra]
+        mistakes += [Fore.RED + c + Style.RESET_ALL for c in typed[len(original):]]
     print("Mistakes/Feedback: " + "".join(mistakes))
 
 def countdown():
@@ -110,6 +106,27 @@ def countdown():
         print(f"{Fore.YELLOW}{i}...{Style.RESET_ALL}")
         time.sleep(1)
     print(Fore.CYAN + "Go!" + Style.RESET_ALL)
+
+# ---------------- JSON Score Functions ----------------
+
+def save_score(score, filename="scores.json"):
+    """Save a player's score to a JSON file."""
+    try:
+        with open(filename, "r") as f:
+            scores = json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        scores = []
+    scores.append(score)
+    with open(filename, "w") as f:
+        json.dump(scores, f, indent=4)
+
+def load_scores(filename="scores.json"):
+    """Load all saved scores from JSON file."""
+    try:
+        with open(filename, "r") as f:
+            return json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        return []
 
 # ---------------- Gameplay ----------------
 
@@ -120,7 +137,6 @@ def play_game():
 
     total_wpm = 0
     total_accuracy = 0
-    round_stats = []
 
     print(f"\nStarting {difficulty} game for {player_name}!\n")
 
@@ -135,7 +151,6 @@ def play_game():
         acc = calculate_accuracy(sentence, typed)
         total_wpm += wpm
         total_accuracy += acc
-        round_stats.append({"wpm": wpm, "accuracy": acc})
         print(f"Time: {elapsed:.2f}s, WPM: {wpm:.2f}, Accuracy: {acc:.2f}%")
         show_mistakes(sentence, typed)
 
@@ -164,10 +179,10 @@ def play_game():
 def display_session_scoreboard(session_scores):
     """Sort by accuracy then WPM, top 3 highlighted."""
     if not session_scores:
-        print("No scores yet in this session.")
+        print("No scores yet.")
         return
 
-    print("\nSession Scoreboard:")
+    print("\nScoreboard:")
     print(f"{'Rank':<5} {'Player':<20} {'WPM':>8} {'Accuracy (%)':>15}")
     print("-"*55)
 
@@ -190,12 +205,11 @@ def display_session_scoreboard(session_scores):
 # ---------------- Main Loop ----------------
 
 def main():
-    session_scores = []
-
     while True:
         score = play_game()
-        session_scores.append(score)
-        display_session_scoreboard(session_scores)
+        save_score(score)
+        all_scores = load_scores()
+        display_session_scoreboard(all_scores)
 
         print("\nOptions:")
         print("1. Play Again")
