@@ -2,7 +2,7 @@
 
 Made by WONG Chun Lung, Juno
 
-#### Video Demo: <YOUR_VIDEO_URL_HERE>
+#### Video Demo: https://www.youtube.com/watch?v=FZOGPrTcuZg
 
 ## Description
 The Typing Speed Test Game is an interactive Python program designed to help players improve their typing speed and accuracy while providing a fun and engaging experience. The game challenges players to type sentences of varying difficulty within a timed environment, calculates performance metrics, awards achievements, and maintains a persistent scoreboard for all-time high scores.
