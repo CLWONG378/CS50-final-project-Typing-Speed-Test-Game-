@@ -6,7 +6,7 @@ Features:
 - Countdown timer
 - Mistake feedback
 - Session stats
-- Colored output
+- Colored output optimized for black background
 - Achievements
 - Persistent scoreboard (JSON)
 - Top 3 highlighted
@@ -103,20 +103,23 @@ def show_mistakes(original, typed):
 
 def countdown():
     for i in range(3, 0, -1):
-        print(f"{Fore.YELLOW}{i}...{Style.RESET_ALL}")
+        print(f"{Fore.LIGHTYELLOW_EX}{i}...{Style.RESET_ALL}")
         time.sleep(1)
-    print(Fore.CYAN + "Go!" + Style.RESET_ALL)
+    print(Fore.LIGHTCYAN_EX + "Go!" + Style.RESET_ALL)
 
 # ---------------- JSON Score Functions ----------------
 
 def save_score(score, filename="scores.json"):
     """Save a player's score to a JSON file."""
+    scores = []
     try:
         with open(filename, "r") as f:
             scores = json.load(f)
     except (FileNotFoundError, json.JSONDecodeError):
         scores = []
+
     scores.append(score)
+
     with open(filename, "w") as f:
         json.dump(scores, f, indent=4)
 
@@ -142,7 +145,7 @@ def play_game():
 
     for i, sentence in enumerate(session_sentences, start=1):
         print(f"\nRound {i}/{NUM_ROUNDS}:")
-        print(Fore.BLUE + sentence + Style.RESET_ALL)
+        print(Fore.LIGHTWHITE_EX + sentence + Style.RESET_ALL)  # White for black background
         countdown()
         start_time = time.time()
         typed = input("> ")
@@ -205,19 +208,32 @@ def display_session_scoreboard(session_scores):
 # ---------------- Main Loop ----------------
 
 def main():
+    print(Fore.LIGHTWHITE_EX + "Welcome to the Typing Speed Test Game!" + Style.RESET_ALL)
+    
     while True:
+        # Play a game session
         score = play_game()
+        
+        # Save score to JSON
         save_score(score)
+        
+        # Load all-time scores and display
         all_scores = load_scores()
         display_session_scoreboard(all_scores)
-
-        print("\nOptions:")
-        print("1. Play Again")
-        print("2. Exit")
-        choice = input("Enter choice: ").strip()
-        if choice != "1":
-            print("\nExiting the game. Goodbye!")
-            break
+        
+        # Replay or exit
+        while True:
+            print("\nOptions:")
+            print("1. Play Again")
+            print("2. Exit")
+            choice = input("Enter choice: ").strip()
+            if choice == "1":
+                break  # Restart main loop to play again
+            elif choice == "2":
+                print("\nExiting the game. Goodbye!")
+                return  # Exit program gracefully
+            else:
+                print(Fore.RED + "Invalid input. Please enter 1 or 2." + Style.RESET_ALL)
 
 if __name__ == "__main__":
     main()
